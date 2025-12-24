@@ -1,9 +1,8 @@
 import { fetchGraphQL } from "@/lib/graphql";
 import { draftMode } from "next/headers";
-import { cookies } from "next/headers";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import PreviewBar from "@/app/components/PreviewBar";
+import Toast from "@/app/components/Ui/Toast";
 
 const QUERY = `
   query GetCaseStudyById($id: ID!) {
@@ -55,10 +54,12 @@ export default async function PreviewCaseStudyPage({
   try {
     data = await fetchGraphQL(QUERY, { id: id }, { next: { revalidate: 60 } });
   } catch (error: any) {
-    if (error?.graphQLErrors) {
-      console.error("GraphQL Errors:", error.graphQLErrors);
-    }
-    throw error;
+    return (
+      <Toast
+        type="error"
+        message={error.message || "Failed to load preview data"}
+      />
+    );
   }
 
   const caseStudy = data?.caseStudy;

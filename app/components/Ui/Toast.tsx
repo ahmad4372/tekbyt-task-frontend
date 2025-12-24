@@ -6,16 +6,16 @@ type ToastType = "success" | "error" | "info";
 
 interface ToastProps {
   message: string;
-  type?: ToastType;
+  type: ToastType;
   duration?: number;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export default function Toast({
   message,
   type = "info",
   duration = 3000,
-  onClose,
+  onClose = () => {},
 }: ToastProps) {
   const [isVisible, setIsVisible] = useState(false);
 

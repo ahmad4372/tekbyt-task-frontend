@@ -98,6 +98,7 @@ export async function generateMetadata({
 }
 
 import CaseStudyView from "@/app/components/CaseStudyDetail";
+import Toast from "@/app/components/Ui/Toast";
 
 export default async function CaseStudyPage({
   params,
@@ -106,11 +107,17 @@ export default async function CaseStudyPage({
 }) {
   const { slug } = await params;
 
-  const data = await fetchGraphQL(
-    QUERY,
-    { slug },
-    { next: { revalidate: 60 } }
-  );
+  let data;
+  try {
+    data = await fetchGraphQL(QUERY, { slug }, { next: { revalidate: 60 } });
+  } catch (error: any) {
+    return (
+      <Toast
+        type="error"
+        message={error.message || "Failed to load preview data"}
+      />
+    );
+  }
 
   const caseStudy = data?.caseStudy;
 
